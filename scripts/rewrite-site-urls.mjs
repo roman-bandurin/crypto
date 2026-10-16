@@ -46,6 +46,9 @@ for (const file of walk(dist)) {
         'href="/" data-canonical-base="1"',
         `href="${origin}/" data-canonical-base="1"`,
       )
+      // JSON-LD: относительный url не является валидным Schema.org URL
+      // (Agent Ready P11: invalid-url) — штампуем абсолютный.
+      content = content.replaceAll('"url": "/"', `"url": "${origin}/"`)
       // Относительные ссылки статических поверхностей превращаем в
       // абсолютные, чтобы сканер гарантированно резолвил их.
       content = content.replaceAll(
