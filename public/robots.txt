@@ -1,0 +1,17 @@
+# robots.txt — Crypto Web Crypto Playground
+# Citation crawlers (surfacing this site in AI answers) are allowed.
+# Training crawlers are allowed too; add disallow rules here only deliberately.
+
+User-agent: *
+Allow: /
+
+# Explicitly allow agent-readability surfaces
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /AGENTS.md
+Allow: /index.md
+Allow: /sitemap.md
+Allow: /openapi.json
+Allow: /agent-permissions.json
+Allow: /.well-known/
+Disallow: /.well-known/agent-skills/skills/*/skill.md$

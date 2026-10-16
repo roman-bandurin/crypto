@@ -1,0 +1,24 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-10-15",
+  "resources": [
+    {
+      "id": "crypto-playground",
+      "title": "Crypto Web Crypto Playground",
+      "description": "Browser-side cryptographic playground with WebMCP tools and an OpenAI-compatible AI chat",
+      "url": "/",
+      "type": "webapp",
+      "api": [
+        { "rel": "service-desc", "href": "/openapi.json", "type": "application/vnd.oai.openapi+json" },
+        { "rel": "describedby", "href": "/llms.txt", "type": "text/plain" },
+        { "rel": "describedby", "href": "/llms-full.txt", "type": "text/plain" },
+        { "rel": "alternate", "href": "/index.md", "type": "text/markdown" },
+        { "rel": "appendix", "href": "/AGENTS.md", "type": "text/markdown" },
+        { "rel": "appendix", "href": "/.well-known/agent-card.json", "type": "application/json" },
+        { "rel": "appendix", "href": "/.well-known/agents.json", "type": "application/json" },
+        { "rel": "appendix", "href": "/.well-known/mcp.json", "type": "application/json" },
+        { "rel": "appendix", "href": "/agent-permissions.json", "type": "application/json" }
+      ]
+    }
+  ]
+}

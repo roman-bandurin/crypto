@@ -1,0 +1,135 @@
+{
+  "version": "0.1.0",
+  "spec": "https://agentsjson.com/spec/0.1.0",
+  "agent": {
+    "name": "Crypto Web Crypto Playground",
+    "url": "/",
+    "description": "Browser-side cryptographic playground. Five tools (list_algorithms, compute_digest, generate_keys, encrypt_or_sign, decrypt_or_verify) are registered via W3C WebMCP and exposed to the in-app OpenAI-compatible chat. All execution is client-side."
+  },
+  "tools": [
+    {
+      "name": "list_algorithms",
+      "description": "List all supported cryptographic algorithms with methods, key lengths and generation flags",
+      "input_schema": { "type": "object", "properties": {}, "additionalProperties": false }
+    },
+    {
+      "name": "compute_digest",
+      "description": "Hash text into a hex digest (SHA-1/256/384/512)",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string" },
+          "method": {
+            "type": "string",
+            "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"],
+            "default": "SHA-256"
+          }
+        },
+        "required": ["text"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "generate_keys",
+      "description": "Generate a symmetric key or public/private key pair as hex strings",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "AES-CBC",
+              "AES-CTR",
+              "AES-GCM",
+              "RSA-OAEP",
+              "RSASSA-PKCS1-v1_5",
+              "RSA-PSS",
+              "ECDSA",
+              "HMAC"
+            ]
+          },
+          "method": { "type": "string", "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] },
+          "length": { "type": "integer" }
+        },
+        "required": ["algorithm"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "encrypt_or_sign",
+      "description": "Encrypt text (AES/RSA-OAEP) or produce a digital signature/MAC (RSASSA, RSA-PSS, ECDSA, HMAC)",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "AES-CBC",
+              "AES-CTR",
+              "AES-GCM",
+              "RSA-OAEP",
+              "RSASSA-PKCS1-v1_5",
+              "RSA-PSS",
+              "ECDSA",
+              "HMAC"
+            ]
+          },
+          "text": { "type": "string" },
+          "key": {
+            "type": "string",
+            "description": "Hex key; omit together with autoGenerateKey=true to generate one"
+          },
+          "method": { "type": "string", "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] },
+          "length": { "type": "integer" },
+          "autoGenerateKey": { "type": "boolean", "default": false }
+        },
+        "required": ["algorithm", "text"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "decrypt_or_verify",
+      "description": "Decrypt ciphertext (AES/RSA-OAEP) or verify a signature/MAC",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "AES-CBC",
+              "AES-CTR",
+              "AES-GCM",
+              "RSA-OAEP",
+              "RSASSA-PKCS1-v1_5",
+              "RSA-PSS",
+              "ECDSA",
+              "HMAC"
+            ]
+          },
+          "ciphertextOrSignature": { "type": "string" },
+          "key": { "type": "string" },
+          "originalText": {
+            "type": "string",
+            "description": "Required for signature verification"
+          },
+          "method": { "type": "string", "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] },
+          "length": { "type": "integer" }
+        },
+        "required": ["algorithm", "ciphertextOrSignature", "key"],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "chains": [
+    {
+      "name": "encrypt-roundtrip",
+      "description": "Generate keys, encrypt a text and decrypt it back (AES family or RSA-OAEP)",
+      "steps": ["generate_keys", "encrypt_or_sign", "decrypt_or_verify"]
+    },
+    {
+      "name": "sign-and-verify",
+      "description": "Generate a key pair, sign a message and verify the signature (RSASSA, RSA-PSS, ECDSA, HMAC)",
+      "steps": ["generate_keys", "encrypt_or_sign", "decrypt_or_verify"]
+    }
+  ]
+}

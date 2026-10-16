@@ -1,0 +1,33 @@
+# Crypto — Web Crypto API Playground & Agentic Tool Server
+
+> A browser-based cryptographic playground exposing 9 Web Crypto API algorithms (DIGEST, AES-CBC/CTR/GCM, RSA-OAEP, RSASSA-PKCS1-v1_5, RSA-PSS, ECDSA, HMAC) as a hands-on form, an OpenAI-compatible AI agent chat with function calling, and W3C WebMCP tools registered via navigator.modelContext. Everything runs client-side — no data ever leaves the browser except chat prompts to the user-configured LLM endpoint.
+
+## Documentation
+
+- [Full documentation (llms-full.txt)](/llms-full.txt): algorithms, key formats, agent tools, protocols
+- [Agent instructions (AGENTS.md)](/AGENTS.md): configuration, usage, architecture, testing
+- [OpenAPI spec (openapi.json)](/openapi.json): client and agent-facing API contract
+- [Markdown mirror of the app page (index.md)](/index.md)
+
+## Cryptographic Tools
+
+- [Digest hashing (DIGEST)](/#digest): SHA-1, SHA-256, SHA-384, SHA-512 hex digests
+- [Symmetric encryption (AES-CBC, AES-CTR, AES-GCM)](/#symmetric): 128/192/256-bit keys, hex ciphertext
+- [Asymmetric encryption (RSA-OAEP)](/#asymmetric): SHA-1..SHA-512 hashes, 512..4096-bit keys
+- [Digital signatures (RSASSA-PKCS1-v1_5, RSA-PSS, ECDSA)](/#signatures): sign and verify
+- [Message authentication (HMAC)](/#hmac): SHA-1..SHA-512, 512..4096-bit keys
+
+## Agent Protocols
+
+- [A2A Agent Card (.well-known/agent-card.json)](/.well-known/agent-card.json): agent profile per a2a.proto v1.0.0
+- [Agents manifest (.well-known/agents.json)](/.well-known/agents.json): tool chains per agents.json v0.1.0
+- [MCP Server Card (.well-known/mcp.json)](/.well-known/mcp.json): in-page WebMCP tool surface
+- [Agent permissions (agent-permissions.json)](/agent-permissions.json): allowed client-side operations
+- [API catalog (.well-known/api-catalog)](/.well-known/api-catalog): RFC 9727 resource catalog
+- [Agent skills (.well-known/agent-skills/index.json)](/.well-known/agent-skills/index.json): discoverable skill index
+- [Sitemap (sitemap.xml)](/sitemap.xml): XML sitemap with lastmod dates
+- [Markdown sitemap (sitemap.md)](/sitemap.md): structured site map in markdown
+
+## Optional
+
+- [Source repository](https://github.com/roman-bandurin/crypto): TypeScript, Vue 3, Vuetify 4, VueUse

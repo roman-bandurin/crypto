@@ -1,0 +1,240 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Crypto — Web Crypto Playground Agent API",
+    "description": "Describes the agent-facing surface of the browser-side crypto playground. All operations execute locally in the browser through the Web Crypto API; there is no server-side crypto endpoint. The same five operations are registered as W3C WebMCP tools (navigator.modelContext) and as OpenAI function-calling tools in the in-app chat.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Static GitHub Pages origin; operations execute client-side"
+    }
+  ],
+  "paths": {
+    "/.well-known/agent-card.json": {
+      "get": {
+        "operationId": "getAgentCard",
+        "summary": "A2A agent card (a2a.proto v1.0.0)",
+        "responses": {
+          "200": {
+            "description": "Agent card JSON",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/.well-known/agents.json": {
+      "get": {
+        "operationId": "getAgentsManifest",
+        "summary": "Wildcard agents.json manifest (v0.1.0)",
+        "responses": {
+          "200": {
+            "description": "Agents manifest",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/.well-known/mcp.json": {
+      "get": {
+        "operationId": "getMcpCard",
+        "summary": "MCP server card describing the in-page WebMCP tool surface",
+        "responses": {
+          "200": {
+            "description": "MCP server card",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "operationId": "getLlmsTxt",
+        "summary": "Short LLM-facing directory (llmstxt.org)",
+        "responses": {
+          "200": {
+            "description": "llms.txt as text/plain",
+            "content": { "text/plain": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/llms-full.txt": {
+      "get": {
+        "operationId": "getLlmsFullTxt",
+        "summary": "Full documentation in llmstxt.org format",
+        "responses": {
+          "200": {
+            "description": "llms-full.txt as text/plain",
+            "content": { "text/plain": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/index.md": {
+      "get": {
+        "operationId": "getIndexMd",
+        "summary": "Markdown mirror of the application page",
+        "responses": {
+          "200": {
+            "description": "Markdown document",
+            "content": { "text/markdown": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/agent-permissions.json": {
+      "get": {
+        "operationId": "getAgentPermissions",
+        "summary": "Allowed client-side agent operations",
+        "responses": {
+          "200": {
+            "description": "Permissions manifest",
+            "content": { "application/json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CryptoToolCall": {
+        "type": "object",
+        "description": "A client-side crypto operation executed by the browser. Used by WebMCP handlers and the OpenAI tool-calling loop.",
+        "oneOf": [
+          { "$ref": "#/components/schemas/ListAlgorithmsArgs" },
+          { "$ref": "#/components/schemas/ComputeDigestArgs" },
+          { "$ref": "#/components/schemas/GenerateKeysArgs" },
+          { "$ref": "#/components/schemas/EncryptOrSignArgs" },
+          { "$ref": "#/components/schemas/DecryptOrVerifyArgs" }
+        ]
+      },
+      "ListAlgorithmsArgs": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "ComputeDigestArgs": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string", "description": "UTF-8 text to hash" },
+          "method": {
+            "type": "string",
+            "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"],
+            "default": "SHA-256"
+          }
+        },
+        "required": ["text"],
+        "additionalProperties": false
+      },
+      "GenerateKeysArgs": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "AES-CBC",
+              "AES-CTR",
+              "AES-GCM",
+              "RSA-OAEP",
+              "RSASSA-PKCS1-v1_5",
+              "RSA-PSS",
+              "ECDSA",
+              "HMAC"
+            ]
+          },
+          "method": { "type": "string", "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] },
+          "length": { "type": "integer", "enum": [128, 192, 256, 384, 512, 521, 1024, 2048, 4096] }
+        },
+        "required": ["algorithm"],
+        "additionalProperties": false
+      },
+      "EncryptOrSignArgs": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "AES-CBC",
+              "AES-CTR",
+              "AES-GCM",
+              "RSA-OAEP",
+              "RSASSA-PKCS1-v1_5",
+              "RSA-PSS",
+              "ECDSA",
+              "HMAC"
+            ]
+          },
+          "text": { "type": "string", "description": "Plaintext to encrypt or message to sign" },
+          "key": {
+            "type": "string",
+            "description": "Hex key (public for RSA-OAEP encryption, private for signing)"
+          },
+          "method": { "type": "string", "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] },
+          "length": { "type": "integer" },
+          "autoGenerateKey": {
+            "type": "boolean",
+            "default": false,
+            "description": "Generate a fresh key when 'key' is omitted"
+          }
+        },
+        "required": ["algorithm", "text"],
+        "additionalProperties": false
+      },
+      "DecryptOrVerifyArgs": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": [
+              "AES-CBC",
+              "AES-CTR",
+              "AES-GCM",
+              "RSA-OAEP",
+              "RSASSA-PKCS1-v1_5",
+              "RSA-PSS",
+              "ECDSA",
+              "HMAC"
+            ]
+          },
+          "ciphertextOrSignature": {
+            "type": "string",
+            "description": "Hex ciphertext (with IV prefix for AES) or hex signature"
+          },
+          "key": {
+            "type": "string",
+            "description": "Hex key (private for decryption, public for verification)"
+          },
+          "originalText": {
+            "type": "string",
+            "description": "Original message; required for signature verification"
+          },
+          "method": { "type": "string", "enum": ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] },
+          "length": { "type": "integer" }
+        },
+        "required": ["algorithm", "ciphertextOrSignature", "key"],
+        "additionalProperties": false
+      },
+      "CryptoResult": {
+        "type": "object",
+        "properties": {
+          "output": {
+            "type": "string",
+            "description": "Hex digest, ciphertext, signature or plaintext"
+          },
+          "publicKey": {
+            "type": "string",
+            "description": "Generated public key (hex), when keys were created"
+          },
+          "privateKey": {
+            "type": "string",
+            "description": "Generated private key (hex), when keys were created"
+          },
+          "verifyStatus": { "type": "boolean", "description": "Signature/MAC verification result" }
+        },
+        "required": ["output"]
+      }
+    }
+  }
+}

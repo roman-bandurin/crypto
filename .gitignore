@@ -1,0 +1,25 @@
+node_modules
+dist
+dist-ssr
+coverage
+*.local
+.agentic/
+repomix-output.*
+code2prompt-output.*
+.claude/
+AGENTS.manual.md
+
+# IDE и локальные каталоги AI-агентов (не часть проекта)
+.vscode/
+.idea
+.cursor/
+.roo/
+
+# Секреты и локальные env-файлы
+.env
+.env.*
+
+# Editor directories and files
+.DS_Store
+Thumbs.db
+.vitest/

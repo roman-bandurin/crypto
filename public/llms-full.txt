@@ -1,0 +1,85 @@
+# Crypto — Web Crypto API Playground & Agentic Tool Server
+
+> A browser-based cryptographic playground exposing 9 Web Crypto API algorithms as a hands-on form, an OpenAI-compatible AI agent chat with function calling, and W3C WebMCP tools. Everything runs client-side.
+
+## Overview
+
+The app lets a user (or an AI agent) select an algorithm, optionally pick a hash method or key length, generate keys, encrypt/decrypt or sign/verify, and inspect hex output. The same operations are exposed to AI agents in two ways:
+
+1. **W3C WebMCP** — the page registers tools through `navigator.modelContext.provideContext({ tools })` in browsers that ship the API (feature-detected; clean no-op elsewhere).
+2. **In-app AI chat** — a floating chat panel (Vuetify `v-bottom-sheet`/`v-dialog`) talks to any OpenAI-compatible endpoint (LM Studio at `http://localhost:1234/v1` by default, Ollama, OpenAI, OpenRouter, or a custom URL) using OpenAI `tools`/`tool_calls`; results are rendered as cards inside the chat.
+
+## Supported Algorithms
+
+| Algorithm | Methods | Key lengths (bits) | Key generation | Inverted keys |
+| :--- | :--- | :--- | :--- | :--- |
+| DIGEST | SHA-1, SHA-256, SHA-384, SHA-512 | — | no | no |
+| AES-CBC | — | 128, 192, 256 | yes | no |
+| AES-CTR | — | 128, 192, 256 | yes | no |
+| AES-GCM | — | 128, 192, 256 | yes | no |
+| RSA-OAEP | SHA-1, SHA-256, SHA-384, SHA-512 | 512, 1024, 2048, 4096 | yes | yes |
+| RSASSA-PKCS1-v1_5 | SHA-1, SHA-256, SHA-384, SHA-512 | 512, 1024, 2048, 4096 | yes | yes |
+| RSA-PSS | SHA-1, SHA-256, SHA-384, SHA-512 | 512, 1024, 2048, 4096 | yes | yes |
+| ECDSA | SHA-1, SHA-256, SHA-384, SHA-512 | 256, 384, 521 | yes | yes |
+| HMAC | SHA-1, SHA-256, SHA-384, SHA-512 | 512, 1024, 2048, 4096 | yes | no |
+
+"Inverted" means the private key sits on the sender side (signing) and the public key on the recipient side (verification).
+
+## Data Formats
+
+- All keys and ciphertexts are lowercase hex strings.
+- AES-CBC/CTR/GCM ciphertext embeds the 128-bit IV as a prefix: `hex(iv) || hex(ciphertext)`.
+- Asymmetric keys are imported from raw hex (SPKI for public, PKCS#8 for private).
+
+## Agent Tools (WebMCP and OpenAI function calling)
+
+The tool registry at `src/agent/toolRegistry.ts` defines five tools:
+
+### list_algorithms
+
+Returns every supported algorithm with its methods, key lengths, generation and inversion flags. Takes no arguments.
+
+### compute_digest
+
+Hashes text into a hex digest. Parameters: `text` (string, required), `method` (one of SHA-1, SHA-256, SHA-384, SHA-512; defaults to SHA-256).
+
+### generate_keys
+
+Generates a symmetric key or a public/private key pair. Parameters: `algorithm` (required), `method` (optional), `length` (optional; defaults to the first configured length). Returns `public` and `private` hex strings.
+
+### encrypt_or_sign
+
+Encrypts text (AES-*, RSA-OAEP) or produces a signature/MAC (RSASSA-PKCS1-v1_5, RSA-PSS, ECDSA, HMAC). Parameters: `algorithm` (required), `text` (required), `key` (hex key; may be omitted when `autoGenerateKey` is true), `method`, `length`, `autoGenerateKey` (boolean). Returns the hex output (and generated keys when applicable).
+
+### decrypt_or_verify
+
+Decrypts ciphertext (AES-*, RSA-OAEP) or verifies a signature/MAC. Parameters: `algorithm` (required), `ciphertextOrSignature` (required), `key` (required hex), `originalText` (required for signatures), `method`, `length`. Returns the plaintext, or `verifyStatus` for signatures.
+
+All handlers are pure client-side Web Crypto calls: read-only, idempotent, no network access, no persistence.
+
+## AI Chat Configuration
+
+The floating chat panel stores its settings in `localStorage`:
+
+- **Base URL** — defaults to `http://localhost:1234/v1` (LM Studio). Presets for Ollama (`http://localhost:11434/v1`), OpenAI (`https://api.openai.com/v1`), OpenRouter (`https://openrouter.ai/api/v1`) and custom.
+- **API key** — optional for LM Studio; stored only in the browser.
+- **Model** — fetched from `GET {baseUrl}/models` and selectable via a combobox.
+
+Tool calling uses the OpenAI `tools` parameter; when a model lacks native `tool_calls`, a JSON block fallback (`{"tool": "...", "arguments": {...}}`) is parsed from the message text. When the app is served over HTTPS and points at a local HTTP endpoint, enable CORS in LM Studio (`lms server start --cors`).
+
+## Sitemap
+
+- [/](/): the application
+- [/llms.txt](/llms.txt): this directory's short index
+- [/llms-full.txt](/llms-full.txt): full documentation
+- [/AGENTS.md](/AGENTS.md): agent instructions
+- [/openapi.json](/openapi.json): API contract
+- [/index.md](/index.md): markdown mirror of the app page
+- [/sitemap.md](/sitemap.md): markdown sitemap
+- [/sitemap.xml](/sitemap.xml): XML sitemap
+- [/agent-permissions.json](/agent-permissions.json): permissions manifest
+- [/.well-known/agent-card.json](/.well-known/agent-card.json): A2A card
+- [/.well-known/agents.json](/.well-known/agents.json): agents manifest
+- [/.well-known/mcp.json](/.well-known/mcp.json): MCP server card
+- [/.well-known/api-catalog](/.well-known/api-catalog): API catalog
+- [/.well-known/agent-skills/index.json](/.well-known/agent-skills/index.json): skill index

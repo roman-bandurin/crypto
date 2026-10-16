@@ -1,0 +1,39 @@
+{
+  "name": "Crypto Web Crypto Playground",
+  "description": "Browser-side cryptographic playground. The page registers five WebMCP tools via navigator.modelContext (list_algorithms, compute_digest, generate_keys, encrypt_or_sign, decrypt_or_verify) and exposes the same operations to an in-app AI chat using the OpenAI function-calling protocol. All handlers are pure client-side Web Crypto calls: read-only, idempotent, no network access.",
+  "version": "1.0.0",
+  "url": "/",
+  "transport": "webmcp",
+  "spec": "w3c-webmcp/navigator.modelContext",
+  "provider": {
+    "organization": "roman-bandurin",
+    "url": "https://github.com/roman-bandurin/crypto"
+  },
+  "tools": [
+    {
+      "name": "list_algorithms",
+      "description": "List all supported cryptographic algorithms with methods, key lengths and generation flags"
+    },
+    {
+      "name": "compute_digest",
+      "description": "Hash text into a hex digest (SHA-1/256/384/512)"
+    },
+    {
+      "name": "generate_keys",
+      "description": "Generate a symmetric key or public/private key pair as hex strings"
+    },
+    {
+      "name": "encrypt_or_sign",
+      "description": "Encrypt text (AES/RSA-OAEP) or produce a digital signature/MAC (RSASSA, RSA-PSS, ECDSA, HMAC)"
+    },
+    {
+      "name": "decrypt_or_verify",
+      "description": "Decrypt ciphertext (AES/RSA-OAEP) or verify a signature/MAC"
+    }
+  ],
+  "security": {
+    "clientSideOnly": true,
+    "networkAccess": false,
+    "persistence": false
+  }
+}

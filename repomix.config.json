@@ -1,0 +1,42 @@
+{
+  "$schema": "https://repomix.com/schemas/latest/schema.json",
+  "include": [],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "*.zip",
+      "*.7z",
+      "*.local",
+      "repomix-output.*",
+      "code2prompt-output.*",
+      ".agentic/**",
+      ".cursor/**",
+      ".roo/**",
+      ".vscode/**"
+    ]
+  },
+  "output": {
+    "filePath": "repomix-output.md",
+    "style": "markdown",
+    "instructionFilePath": ".repomix-instruction.md",
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "compress": false,
+    "topFilesLength": 12,
+    "topFilesPrefixes": [
+      "AGENTS.md",
+      "package.json",
+      "vite.config.mts",
+      "tsconfig.json",
+      "src/domain/",
+      "src/crypto/",
+      "src/agent/toolRegistry.ts",
+      "src/components/workspace/CryptoWorkspace.vue",
+      "src/i18n/locales/ru.ts"
+    ]
+  },
+  "security": {
+    "enableSecurityCheck": true
+  }
+}

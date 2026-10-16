@@ -1,0 +1,41 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-10-15",
+  "skills": [
+    {
+      "id": "crypto-digest",
+      "name": "Compute a digest",
+      "description": "Hash a UTF-8 text with SHA-1/256/384/512 into a hex digest using the browser Web Crypto API.",
+      "tool": "compute_digest",
+      "example": { "text": "hello", "method": "SHA-256" }
+    },
+    {
+      "id": "crypto-generate-keys",
+      "name": "Generate cryptographic keys",
+      "description": "Generate a symmetric key or public/private pair (AES, RSA, ECDSA, HMAC) as hex strings.",
+      "tool": "generate_keys",
+      "example": { "algorithm": "AES-GCM", "length": 256 }
+    },
+    {
+      "id": "crypto-encrypt",
+      "name": "Encrypt or sign",
+      "description": "Encrypt text (AES-CBC/CTR/GCM, RSA-OAEP) or produce a signature/MAC (RSASSA-PKCS1-v1_5, RSA-PSS, ECDSA, HMAC).",
+      "tool": "encrypt_or_sign",
+      "example": { "algorithm": "AES-GCM", "text": "secret", "autoGenerateKey": true }
+    },
+    {
+      "id": "crypto-decrypt",
+      "name": "Decrypt or verify",
+      "description": "Decrypt ciphertext (AES, RSA-OAEP) or verify a signature/MAC (RSASSA, RSA-PSS, ECDSA, HMAC).",
+      "tool": "decrypt_or_verify",
+      "example": { "algorithm": "AES-GCM", "ciphertextOrSignature": "<hex>", "key": "<hex>" }
+    },
+    {
+      "id": "crypto-list-algorithms",
+      "name": "List supported algorithms",
+      "description": "Return the catalog of supported algorithms with methods, key lengths and capabilities.",
+      "tool": "list_algorithms",
+      "example": {}
+    }
+  ]
+}

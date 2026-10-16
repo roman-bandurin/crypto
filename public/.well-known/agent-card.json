@@ -1,0 +1,21 @@
+{
+  "protocolVersion": "1.0.0",
+  "preferredTransport": "webmcp",
+  "name": "Crypto Web Crypto Playground Agent",
+  "description": "An in-page cryptographic agent surface: the site registers client-side Web Crypto tools (hashing, key generation, encryption, signing, verification) for AI agents via W3C WebMCP and an OpenAI-compatible in-app chat. No server-side execution; all operations run in the user's browser.",
+  "url": "/",
+  "version": "1.0.0",
+  "capabilities": {
+    "tools": { "listChanged": false },
+    "streaming": false,
+    "stateTransitionModes": ["webmcp"]
+  },
+  "defaultInputModes": ["text/plain"],
+  "defaultOutputModes": ["text/plain"],
+  "provider": {
+    "organization": "roman-bandurin",
+    "url": "https://github.com/roman-bandurin/crypto"
+  },
+  "securitySchemes": {},
+  "security": []
+}

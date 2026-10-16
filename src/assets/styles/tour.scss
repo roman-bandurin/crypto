@@ -1,0 +1,218 @@
+/**
+ * assets/styles/tour.scss
+ *
+ * Глобальные стили тур-степперов (TourParams.vue, TourTimeline.vue) и
+ * подсказок тура. Глобальные сознательно: оверлеи подсказок
+ * (v-tooltip) телепортируются в body, а классы шагов нужны обоим
+ * компонентам тура. Импортируется в main.ts после vuetify-overrides.scss,
+ * чтобы побеждать каскадом стили Vuetify.
+ */
+
+/* Высоту пунктов таймлайна синхронизирует ResizeObserver
+   (setupTimelineSync в TourTimeline.vue), поэтому жёсткая высота
+   .v-expansion-panel-text больше не нужна. */
+
+/* Колонка таймлайна уже своего содержимого (особенно на мобильном), поэтому
+   контент степпера вылезал за правый край. Запрещаем сжатие и обрезаем
+   переполнение. Симметричный отступ колонки задаёт одинаковый зазор от края
+   экрана/полей для обоих таймлайнов. */
+.tour-timeline {
+  min-width: 0;
+  overflow: hidden;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+/* Степперы тура по умолчанию рисуются на surface — тоне карточек,
+   который светлее фона приложения (background) и в тёмной теме
+   читается серым «ореолом» вокруг шагов. Тур — это накладка над
+   рабочей областью, а не карточка, поэтому убираем фон: плашки
+   сливаются с фоном, остаются только иконки, номера и линия. */
+.v-stepper.v-stepper--flat,
+.tour-timeline .v-stepper-vertical-item,
+.tour-timeline .v-expansion-panel {
+  background-color: transparent !important;
+}
+
+/* Аватар и соединительная линия — по центру друг друга. Верхний отступ
+   `16px` центрирует иконку на подписи-плейсхолдере поля: она идёт на 28px
+   ниже верха поля (16px полей + половина строки 24px), а аватар при
+   центрировании «start» встаёт верхом на 16px и центром на 28px.
+   Горизонтальный отступ убран: его роль выполняет padding самой колонки. */
+.tour-timeline .v-expansion-panel-title {
+  padding: 16px 0 7px;
+}
+
+.tour-timeline .v-stepper-vertical-item__avatar.v-avatar {
+  margin-inline-end: 0;
+}
+
+/* Начало соединительной линии оставляем на дефолтных 44px: при отступе
+   заголовка 16px это ровно на 4px ниже иконки, а высота calc(100% - 30px)
+   доводит линию до следующей иконки без наложения. */
+.tour-timeline .v-stepper-vertical-item:not(:last-child):before {
+  left: 12px;
+}
+
+/* Правый таймлайн зеркалим: аватар и линия прижимаются к правому краю,
+   зазор от экрана такой же, как у левого. */
+.tour-timeline--recipient .v-expansion-panel-title {
+  flex-direction: row-reverse;
+}
+
+.tour-timeline--recipient .v-stepper-vertical-item__avatar.v-avatar {
+  margin-inline-start: 0;
+}
+
+.tour-timeline--recipient .v-stepper-vertical-item:not(:last-child):before {
+  left: auto;
+  right: 12px;
+}
+
+/* На планшете и десктопе колонка шире — увеличиваем зазор от края и полей. */
+@media (min-width: 960px) {
+  .tour-timeline {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+/* Приглушаем только предстоящие шаги — те, что идут после границы прогресса.
+   Пройденные и текущий остаются насыщенными (номер вместо иконки у
+   неактивного пункта даёт сам Vuetify). Отключённые приглушены отдельно. */
+.tour-timeline .v-stepper-vertical-item.stepper-step--upcoming:not(.v-expansion-panel--disabled) {
+  opacity: var(--v-medium-emphasis-opacity);
+}
+
+/* Верхний (горизонтальный) степпер по умолчанию приглушает все пункты;
+   возвращаем насыщенность пройденным и текущему, оставляя приглушёнными
+   только предстоящие. */
+.v-stepper .v-stepper-item:not(.stepper-step--upcoming):not(.v-stepper-item--disabled) {
+  opacity: 1;
+}
+
+/* Шаги отключённых полей приглушены сильнее — как disabled-кнопки. Правило
+   идёт после приглушения неактивных пунктов, чтобы перебить его. */
+.tour-timeline .v-stepper-vertical-item.v-expansion-panel--disabled,
+.v-stepper .v-stepper-item--disabled {
+  opacity: var(--v-disabled-opacity);
+}
+
+/* Текущий шаг тура держим максимально насыщенным независимо от границы
+   прогресса: он подсвечивается как активный. */
+.v-stepper .v-stepper-item.stepper-step--current,
+.tour-timeline .v-stepper-vertical-item.stepper-step--current {
+  opacity: 1;
+}
+
+/* Шаг поля, находящегося в фокусе, насыщен так же, как текущий/пройденный:
+   фокус пользователя важнее границы прогресса. Селектор повторяет
+   :not(.v-expansion-panel--disabled) из правила приглушения предстоящих
+   шагов — иначе оно окажется специфичнее и перебьёт насыщенность.
+   Горизонтальный степпер приглушает только предстоящие шаги, поэтому
+   правила для него не требуется. */
+.tour-timeline .v-stepper-vertical-item.stepper-step--focused:not(.v-expansion-panel--disabled) {
+  opacity: 1;
+}
+
+/* Плавное появление/исчезновение тур-степперов: колонка раскрывается по
+   высоте и ширине и растворяется по прозрачности, поэтому «пространство»
+   под степперы появляется и исчезает плавно, а не скачком.
+   max-height с запасом (1000px) покрывает любую высоту таймлайна;
+   max-width/flex-basis в нулевой фазе схлопывают колонку по горизонтали.
+   Горизонтальные отступы .tour-timeline тоже участвуют в переходе: без них
+   колонка схлопывалась бы до своей ширины padding и на экране оставалась
+   пустая полоска. Правила объявлены после стилей Vuetify, поэтому нули
+   перебивают значения классов v-col и медиазапроса. */
+.tour-collapse-enter-active,
+.tour-collapse-leave-active {
+  transition:
+    max-height 0.4s ease,
+    max-width 0.4s ease,
+    flex-basis 0.4s ease,
+    opacity 0.4s ease,
+    padding-left 0.4s ease,
+    padding-right 0.4s ease;
+  overflow: hidden;
+}
+
+.tour-collapse-enter-from,
+.tour-collapse-leave-to {
+  max-height: 0;
+  max-width: 0;
+  flex-basis: 0;
+  padding-left: 0;
+  padding-right: 0;
+  opacity: 0;
+}
+
+.tour-collapse-enter-to,
+.tour-collapse-leave-from {
+  max-height: 1000px;
+  opacity: 1;
+}
+
+/* Дополнительный ореол у активного шага: к карандашу Vuetify добавляем
+   цветное кольцо вокруг аватара. Outline рисуется вне рамки и не влияет на
+   раскладку, поэтому иконка остаётся на месте на всех брейкпоинтах. */
+.v-stepper .v-stepper-item.stepper-step--current .v-stepper-item__avatar,
+.tour-timeline .v-stepper-vertical-item.stepper-step--current .v-stepper-vertical-item__avatar {
+  box-shadow: 0 0 0 4px rgba(var(--v-theme-secondary), 0.35) !important;
+}
+
+/* Шаг «Проверка» окрашивается по результату: зелёный — успех, красный —
+   неуспех. Пункт и его аватар держим насыщенными (opacity:1 перебивает
+   приглушение неактивных пунктов). */
+.tour-timeline .v-stepper-vertical-item.stepper-step--valid,
+.tour-timeline .v-stepper-vertical-item.stepper-step--invalid {
+  opacity: 1;
+}
+
+/* Подсказка тура: ограничиваем ширину, чтобы длинный текст переносился и
+   подсказка не растягивалась поверх полей. Цвет — дефолтный Vuetify
+   (surface-variant / on-surface-variant): нейтральный и корректно
+   переключается между светлой и тёмной темой, поэтому фон и текст
+   не переопределяем. Класс задаётся через content-class и
+   стилизуется глобально (оверлей телепортируется в body). */
+.v-tooltip > .v-overlay__content.tour-tooltip {
+  max-width: 280px;
+}
+
+/* VAvatar получает цвет инлайн-стилем из props.color, поэтому
+   переопределяем фон и текст с !important. */
+.v-stepper-vertical-item.stepper-step--valid .v-stepper-vertical-item__avatar {
+  background-color: rgb(var(--v-theme-success)) !important;
+  color: rgb(var(--v-theme-on-success)) !important;
+}
+
+.v-stepper-vertical-item.stepper-step--invalid .v-stepper-vertical-item__avatar {
+  background-color: rgb(var(--v-theme-error)) !important;
+  color: rgb(var(--v-theme-on-error)) !important;
+}
+
+/* На мобайле колонка отправителя разворачивается (column-reverse задаёт
+   workspace/CryptoWorkspace.vue), поэтому разворачиваем и таймлайн (порядок
+   пунктов через wrap-reverse), чтобы иконки оставались напротив своих
+   полей. */
+@media (max-width: 599.98px) {
+  .tour-timeline--sender .v-expansion-panels {
+    flex-wrap: wrap-reverse;
+  }
+
+  /* Пункты идут снизу вверх, поэтому линию рисует не последний, а первый
+     пункт DOM: снимаем её у «последнего» и включаем у всех остальных. */
+  .tour-timeline--sender .v-stepper-vertical-item:not(:last-child):before {
+    content: none;
+  }
+
+  .tour-timeline--sender .v-stepper-vertical-item:not(:first-child):before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: calc(100% - 30px);
+    background: rgba(var(--v-border-color), var(--v-border-opacity));
+    left: 12px;
+    top: 44px;
+    z-index: 1;
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "version": "1.0.0",
+  "agent": "Crypto Web Crypto Playground",
+  "updated": "2026-10-15",
+  "resources": [
+    {
+      "path": "/",
+      "description": "The application: crypto form, guided tour, AI chat",
+      "permissions": {
+        "read": ["agent", "user"],
+        "write": []
+      }
+    },
+    {
+      "path": "/llms.txt",
+      "description": "Short LLM directory",
+      "permissions": { "read": ["agent", "user"], "write": [] }
+    },
+    {
+      "path": "/llms-full.txt",
+      "description": "Full documentation",
+      "permissions": { "read": ["agent", "user"], "write": [] }
+    },
+    {
+      "path": "/.well-known/*",
+      "description": "Agent protocol manifests (read-only, static)",
+      "permissions": { "read": ["agent", "user"], "write": [] }
+    }
+  ],
+  "actions": [
+    {
+      "action": "crypto.execute",
+      "description": "Execute a client-side Web Crypto operation (hash, generate keys, encrypt, sign, decrypt, verify) via WebMCP or the in-app chat",
+      "guidelines": [
+        "Operations are read-only and idempotent: they never persist data or contact the network",
+        "Key material exists only in the page session; agents must not exfiltrate it",
+        "Handlers validate inputs against JSON Schema before invoking Web Crypto"
+      ],
+      "risk": "none",
+      "permissions": { "execute": ["agent"] }
+    },
+    {
+      "action": "chat.send",
+      "description": "Send a chat message to the user-configured LLM endpoint (LM Studio / OpenAI-compatible)",
+      "guidelines": [
+        "Messages go only to the base URL configured by the user in the chat settings",
+        "The API key is stored in the user's localStorage and never sent anywhere except the configured endpoint",
+        "No chat history is stored server-side"
+      ],
+      "risk": "low",
+      "permissions": { "execute": ["user"], "delegateToAgent": true }
+    }
+  ]
+}

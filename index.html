@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crypto — Web Crypto API Playground & Agentic Tool Server</title>
+
+    <!-- P6: meta description -->
+    <meta
+      name="description"
+      content="Browser-based cryptographic playground with 9 Web Crypto algorithms (DIGEST, AES-CBC/CTR/GCM, RSA-OAEP, RSASSA, RSA-PSS, ECDSA, HMAC), an AI agent chat with function calling, and W3C WebMCP tools. Everything runs client-side."
+    />
+    <!-- P7 / P8: Open Graph -->
+    <meta property="og:title" content="Crypto — Web Crypto API Playground & Agentic Tool Server" />
+    <meta
+      property="og:description"
+      content="Encrypt, decrypt, sign and verify with the native Web Crypto API — plus AI agent tools via WebMCP and an [OI]-compatible chat. Client-side only."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- P25: AI snippet directives (full text + large images eligible for AI Overviews) -->
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <meta
+      name="googlebot"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <!-- P5: canonical (URL stamped at build time by rewrite-site-urls.mjs; locally relative).
+         vite-ignore: static discovery URLs are copied from public/ as-is,
+         Vite must not try to resolve them as build assets. -->
+    <link rel="canonical" href="/" data-canonical-base="1" vite-ignore />
+
+    <!-- P17: markdown mirror -->
+    <link
+      rel="alternate"
+      type="text/markdown"
+      href="/index.md"
+      title="Markdown mirror"
+      vite-ignore
+    />
+
+    <!-- P24: llms.txt v2 discovery link -->
+    <link rel="describedby" type="text/plain" href="/llms.txt" vite-ignore />
+
+    <!-- P10 / P11: JSON-LD structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Crypto — Web Crypto API Playground & Agentic Tool Server",
+        "url": "/",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript and a browser with Web Crypto API support",
+        "description": "Browser-based cryptographic playground with 9 Web Crypto algorithms, an AI agent chat with function calling, and W3C WebMCP tools. Everything runs client-side.",
+        "featureList": [
+          "Hashing (SHA-1, SHA-256, SHA-384, SHA-512)",
+          "Symmetric encryption (AES-CBC, AES-CTR, AES-GCM)",
+          "Asymmetric encryption (RSA-OAEP)",
+          "Digital signatures (RSASSA-PKCS1-v1_5, RSA-PSS, ECDSA)",
+          "Message authentication (HMAC)",
+          "AI agent chat with function calling (LM Studio / [OI]-compatible endpoints)",
+          "W3C WebMCP tools via navigator.modelContext"
+        ],
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "inLanguage": ["en", "ru"]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "Crypto",
+        "codeRepository": "https://github.com/roman-bandurin/crypto",
+        "programmingLanguage": ["TypeScript", "Vue.js"],
+        "runtimePlatform": "Web Browser",
+        "license": "https://opensource.org/licenses/MIT"
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Static prerender fallback: replaces Vite's empty div. Vue mounts over
+           this content; crawlers and agent-readability scanners (which do not
+           execute JS) parse this semantic HTML instead (checks P12–P14, P23,
+           A7, A12). Every heading below is server-rendered, real text. -->
+      <main class="fallback">
+        <h1>Crypto — Web Crypto API Playground & Agentic Tool Server</h1>
+        <p>
+          A browser application for hands-on cryptography: pick an algorithm, generate keys,
+          encrypt, decrypt, sign and verify — all through the native Web Crypto API. The same
+          operations are exposed to AI agents via W3C WebMCP (<code>navigator.modelContext</code>)
+          and an in-app chat that speaks the [OI] tool-calling protocol with LM Studio or any
+          compatible endpoint.
+        </p>
+
+        <h2>Supported Algorithms</h2>
+        <h3>Hashing</h3>
+        <p>DIGEST computes SHA-1, SHA-256, SHA-384 and SHA-512 hex digests of arbitrary text.</p>
+        <h3>Symmetric Encryption</h3>
+        <p>
+          AES-CBC, AES-CTR and AES-GCM encrypt text with 128, 192 or 256-bit keys. The ciphertext
+          embeds a random 128-bit initialization vector as a hex prefix.
+        </p>
+        <h3>Asymmetric Encryption</h3>
+        <p>
+          RSA-OAEP encrypts with a public key and decrypts with a private key, using SHA-1 through
+          SHA-512 hashes and 512 to 4096-bit key sizes.
+        </p>
+        <h3>Digital Signatures</h3>
+        <p>
+          RSASSA-PKCS1-v1_5, RSA-PSS and ECDSA sign a message with a private key and verify the
+          signature with the public key, reporting an explicit verification result.
+        </p>
+        <h3>Message Authentication</h3>
+        <p>
+          HMAC produces keyed authentication codes with SHA-1 through SHA-512 and 512 to 4096-bit
+          keys.
+        </p>
+
+        <h2>AI Agent Tools</h2>
+        <p>
+          Five tools are registered for agents: <code>list_algorithms</code>,
+          <code>compute_digest</code>, <code>generate_keys</code>, <code>encrypt_or_sign</code> and
+          <code>decrypt_or_verify</code>. They run through W3C WebMCP when the browser ships
+          <code>navigator.modelContext</code>, and through [OI] function calling in the in-app chat
+          otherwise. Every handler is a pure client-side Web Crypto call: read-only, idempotent, no
+          network access.
+        </p>
+
+        <h2>Agent Documentation</h2>
+        <ul>
+          <li><a href="/llms.txt">llms.txt</a> — short LLM-facing directory</li>
+          <li><a href="/llms-full.txt">llms-full.txt</a> — full documentation</li>
+          <li><a href="/AGENTS.md">AGENTS.md</a> — agent instructions</li>
+          <li><a href="/index.md">index.md</a> — markdown mirror of this page</li>
+          <li><a href="/openapi.json">openapi.json</a> — API contract</li>
+          <li><a href="/sitemap.md">sitemap.md</a> — markdown sitemap</li>
+        </ul>
+
+        <p>
+          All keys and outputs are lowercase hex strings; asymmetric keys import as raw hex (SPKI
+          public, PKCS#8 private). Nothing is ever sent to a server: the entire cryptographic
+          surface executes in the browser. The optional AI chat talks only to the endpoint
+          configured by the user.
+        </p>
+      </main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
