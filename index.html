@@ -139,8 +139,22 @@
           <li><a href="/AGENTS.md">AGENTS.md</a> — agent instructions</li>
           <li><a href="/index.md">index.md</a> — markdown mirror of this page</li>
           <li><a href="/openapi.json">openapi.json</a> — API contract</li>
+          <li>
+            <a href="/glossary.md">glossary.md</a> — glossary of algorithm, key and protocol terms
+          </li>
           <li><a href="/sitemap.md">sitemap.md</a> — markdown sitemap</li>
         </ul>
+
+        <h2>Glossary</h2>
+        <p>
+          Terminology used across these agent surfaces: DIGEST is a SHA hash without a key;
+          symmetric ciphers (AES-CBC, AES-CTR, AES-GCM) share one secret key and prefix ciphertext
+          with a random hex IV; RSA-OAEP encrypts under a public key and decrypts under the private
+          one; RSASSA-PKCS1-v1_5, RSA-PSS and ECDSA sign and verify; HMAC authenticates with a key.
+          Every value crossing this interface is a lowercase hex string, and SPKI/PKCS#8 are the
+          ASN.1 structures used to import raw-hex keys. The full list is in
+          <a href="/glossary.md">glossary.md</a>.
+        </p>
 
         <p>
           All keys and outputs are lowercase hex strings; asymmetric keys import as raw hex (SPKI

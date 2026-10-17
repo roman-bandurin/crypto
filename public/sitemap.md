@@ -12,6 +12,7 @@ A structured map of every agent-readable surface published by this site.
 - [llms-full.txt](/llms-full.txt): full documentation in llmstxt.org format
 - [AGENTS.md](/AGENTS.md): agent instructions (configuration, usage, architecture, testing)
 - [index.md](/index.md): markdown mirror of the application page
+- [glossary.md](/glossary.md): glossary of algorithm, key and protocol terms
 - [sitemap.md](/sitemap.md): this file
 - [sitemap.xml](/sitemap.xml): XML sitemap with lastmod dates
 

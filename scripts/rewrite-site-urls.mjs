@@ -52,7 +52,7 @@ for (const file of walk(dist)) {
       // Относительные ссылки статических поверхностей превращаем в
       // абсолютные, чтобы сканер гарантированно резолвил их.
       content = content.replaceAll(
-        /href="\/(llms\.txt|llms-full\.txt|AGENTS\.md|index\.md|openapi\.json|sitemap\.md)"/g,
+        /href="\/(llms\.txt|llms-full\.txt|AGENTS\.md|index\.md|glossary\.md|openapi\.json|sitemap\.md)"/g,
         `href="${origin}/$1"`,
       )
     }

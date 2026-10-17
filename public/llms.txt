@@ -8,6 +8,7 @@
 - [Agent instructions (AGENTS.md)](/AGENTS.md): configuration, usage, architecture, testing
 - [OpenAPI spec (openapi.json)](/openapi.json): client and agent-facing API contract
 - [Markdown mirror of the app page (index.md)](/index.md)
+- [Glossary (glossary.md)](/glossary.md): algorithm, key and protocol terminology
 
 ## Cryptographic Tools
 
@@ -27,6 +28,7 @@
 - [Agent skills (.well-known/agent-skills/index.json)](/.well-known/agent-skills/index.json): discoverable skill index
 - [Sitemap (sitemap.xml)](/sitemap.xml): XML sitemap with lastmod dates
 - [Markdown sitemap (sitemap.md)](/sitemap.md): structured site map in markdown
+- [Glossary (glossary.md)](/glossary.md): algorithm, key and protocol terminology
 
 ## Optional
 

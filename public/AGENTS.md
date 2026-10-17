@@ -45,6 +45,13 @@ Dependency rule (strictly downward): components → domain/crypto; `agent/` may 
 
 The page registers five tools via `navigator.modelContext.provideContext` when the API is present: `list_algorithms`, `compute_digest`, `generate_keys`, `encrypt_or_sign`, `decrypt_or_verify`. Schemas live in `src/agent/toolRegistry.ts`; do not register tools anywhere else. All handlers are client-side only and must stay read-only and idempotent.
 
+## Sitemap
+
+- [sitemap.md](/sitemap.md): structured map of every agent-readable surface
+- [index.md](/index.md): markdown mirror of the application page
+- [glossary.md](/glossary.md): glossary of algorithm, key and protocol terms
+- [openapi.json](/openapi.json): machine-readable contract of this app
+
 ## Testing
 
 - `npm test` — unit tests (components, crypto round-trips, property tests with fast-check, agent tools).

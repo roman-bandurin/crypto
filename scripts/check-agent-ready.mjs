@@ -44,6 +44,7 @@ checkFile('public/robots.txt', 'robots.txt существует (S7)')
 checkFile('public/sitemap.xml', 'sitemap.xml существует (S8)')
 checkFile('public/sitemap.md', 'sitemap.md существует (S10)')
 checkFile('public/index.md', 'markdown-зеркало index.md существует (P15)')
+checkFile('public/glossary.md', 'glossary.md существует (P14)')
 checkFile('public/openapi.json', 'OpenAPI спецификация существует (S15)')
 checkFile('public/agent-permissions.json', 'agent-permissions.json существует (C7)')
 checkFile('public/.well-known/agent-card.json', 'A2A Agent Card существует (C4)')
@@ -109,6 +110,22 @@ checkPattern(
 /* --- sitemap.md: заголовки и ссылки (S11) --- */
 checkPattern('public/sitemap.md', /^# /m, 'S11', 'sitemap.md содержит H1')
 checkPattern('public/sitemap.md', /\[[^\]]+\]\([^)]+\)/, 'S11', 'sitemap.md содержит ссылки')
+
+/* --- Секция Sitemap в markdown-зеркалах (P20) --- */
+for (const mirror of ['public/index.md', 'public/glossary.md', 'public/AGENTS.md']) {
+  checkPattern(mirror, /^## Sitemap/m, 'P20', `${mirror} содержит секцию Sitemap`)
+}
+
+/* --- Глоссарий доступен со страницы (P14) --- */
+checkPattern('index.html', /href="\/glossary\.md"/, 'P14', 'index.html ссылается на glossary.md')
+
+/* --- YAML frontmatter в markdown-зеркалах (P16) --- */
+for (const mirror of ['public/index.md', 'public/glossary.md']) {
+  checkPattern(mirror, /^---/, 'P16', `${mirror} начинается с YAML frontmatter`)
+  checkPattern(mirror, /^title: /m, 'P16', `${mirror} frontmatter содержит title`)
+  checkPattern(mirror, /^description: /m, 'P16', `${mirror} frontmatter содержит description`)
+  checkPattern(mirror, /^last_updated: /m, 'P16', `${mirror} frontmatter содержит last_updated`)
+}
 
 console.log(failures === 0 ? '\nВсе проверки пройдены.' : `\nПровалено проверок: ${failures}`)
 process.exit(failures === 0 ? 0 : 1)
